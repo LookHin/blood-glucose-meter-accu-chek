@@ -4,6 +4,7 @@ import time
 
 from typing import Sequence
 from bleak import BleakScanner
+from bleak.backends.device import BLEDevice
 
 async def findBluetoothDevice():
     devices: Sequence[BLEDevice] = await BleakScanner.discover(timeout=1)

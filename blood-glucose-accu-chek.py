@@ -11,6 +11,7 @@ import platform
 
 from typing import Sequence
 from bleak import BleakClient, BleakScanner
+from bleak.backends.device import BLEDevice
 from datetime import datetime
 from requests.structures import CaseInsensitiveDict
 
