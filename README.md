@@ -151,7 +151,7 @@ while True:
 # python3 blood-glucose-accu-chek.py
 ```
 
-![Image](https://www.onlyme.dev/github/glucose-meter-accu-chek/5.png)
+![Image](https://www.onlyme.dev/github/glucose-meter-accu-chek/5.png?v=2)
 
 
 ## About Us
