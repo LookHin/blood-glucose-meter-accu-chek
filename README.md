@@ -111,8 +111,19 @@ def glucoseMeasurement(handle, data):
     localTimeZoneOffset = datetime.fromtimestamp(currentTimestamp) - datetime.utcfromtimestamp(currentTimestamp)
     currentDateTime = datetime.strptime(deviceDateTime, "%Y-%m-%d %H:%M:%S") + localTimeZoneOffset
 
-    glucoseMg = "{:.1f}".format((((unpackData[12] & 0xFF) << 8) | (unpackData[11] & 0xFF)) / 256.0)
-    glucoseMm = "{:.1f}".format(((((unpackData[12] & 0xFF) << 8) | (unpackData[11] & 0xFF)) / 256.0) / 18.0)
+    glucoseOffset = 0
+
+    if unpackData[13] == 176:
+        glucoseOffset = 0 * 256
+    elif unpackData[13] == 177:
+        glucoseOffset = 1 * 256
+    elif unpackData[13] == 178:
+        glucoseOffset = 2 * 256
+    elif unpackData[13] == 179:
+        glucoseOffset = 3 * 256
+
+    glucoseMg = "{:.1f}".format(unpackData[12] + glucoseOffset)
+    glucoseMm = "{:.1f}".format((unpackData[12] + glucoseOffset) / 18.0)
 
     print("Date Time: ", str(currentDateTime.strftime("%Y-%m-%d %H:%M:%S")), "\t\tGlucose: ", glucoseMm, "mmol/L , ", glucoseMg, "mg/dL")
 
