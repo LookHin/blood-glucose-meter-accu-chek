@@ -102,7 +102,7 @@ def glucoseMeasurement(handle, data):
     unpackData = [dt[0] for dt in struct.iter_unpack("<B", data)]
 
     hexData = [hex(dt) for dt in unpackData]
-    print("hexData : ", hexData)
+    print("hexData:", hexData)
 
     deviceDateTime = "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}".format(int(((unpackData[4] & 0xFF) << 8) | unpackData[3]), int(unpackData[5]), int(unpackData[6]), int(unpackData[7]), int(unpackData[8]), int(unpackData[9]))
 
@@ -111,8 +111,8 @@ def glucoseMeasurement(handle, data):
     localTimeZoneOffset = datetime.fromtimestamp(currentTimestamp) - datetime.utcfromtimestamp(currentTimestamp)
     currentDateTime = datetime.strptime(deviceDateTime, "%Y-%m-%d %H:%M:%S") + localTimeZoneOffset
 
-    glucoseMm = (unpackData[10] / 10.0)
-    glucoseMg = "{:.1f}".format((unpackData[10] / 10.0) * 18)
+    glucoseMg = "{:.1f}".format((((unpackData[12] & 0xFF) << 8) | (unpackData[11] & 0xFF)) / 256.0)
+    glucoseMm = "{:.1f}".format(((((unpackData[12] & 0xFF) << 8) | (unpackData[11] & 0xFF)) / 256.0) / 18.0)
 
     print("Date Time: ", str(currentDateTime.strftime("%Y-%m-%d %H:%M:%S")), "\t\tGlucose: ", glucoseMm, "mmol/L , ", glucoseMg, "mg/dL")
 
@@ -121,7 +121,7 @@ async def receiveNotification():
 
     async with BleakClient(GLUCOSE_DEVICE_ADDRESS) as client:
         await client.start_notify(GLUCOSE_MEASUREMENT_UUID, glucoseMeasurement)
-        await asyncio.sleep(60)
+        await asyncio.sleep(5.0)
         await client.stop_notify(GLUCOSE_MEASUREMENT_UUID)
 
 async def findBluetoothDevice():
